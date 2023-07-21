@@ -1,0 +1,30 @@
+version: '2.3'
+
+# if 'docker-compose run' is used
+# do not forget '--service-ports'!
+
+services:
+    cctestx:
+      image: vykozlov/deep-oc-cctestx
+      ports:
+        - 5000:5000
+        - 6006:6006
+      entrypoint: ["deepaas-run", "--listen-ip=0.0.0.0"]
+
+
+    cctestx-gpu:
+      image: vykozlov/deep-oc-cctestx:gpu
+      runtime: nvidia
+      ports:
+        - 5000:5000
+        - 6006:6006
+      entrypoint: ["deepaas-run", "--listen-ip=0.0.0.0"]
+
+
+    cctestx-rclone:
+      extends:
+        service: cctestx
+      volumes:
+        - $HOME/.config/rclone:/srv/.rclone
+      environment:
+        - RCLONE_CONFIG=/srv/.rclone/rclone.conf
